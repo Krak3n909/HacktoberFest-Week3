@@ -1,0 +1,52 @@
+# ---------- Downloads Sloth config ----------
+# Change the model or provider here. No code changes needed.
+# Tip: use forward slashes in Windows paths (E:/Downloads/test) or 'single quotes'.
+
+# (top-level keys must come before any [section])
+categories = [
+  "Documents/Work", "Documents/School", "Finance/Receipts", "Finance/Invoices",
+  "Finance/Bank", "Identity", "Images/Screenshots", "Images/Photos", "Images/Memes",
+  "Software/Installers", "Media/Audio", "Media/Video", "Books/Papers", "Code",
+  "Archives", "Other",
+]
+
+[llm]
+base_url = "https://openrouter.ai/api/v1"
+model = "google/gemma-4-31b-it:free"     # open-weight (Apache 2.0)
+api_key_env = "OPENROUTER_API_KEY"       # set with: setx OPENROUTER_API_KEY "sk-or-..."
+min_seconds_between_calls = 0.3            # free tier has rate limits; be gentle
+max_requests_per_day = 900                 # free accounts get 50/day unless you ever bought $10 credits (then 1000)
+
+[folders]
+watch = "E:/DevWeek3Demo/demo_file"                  # only top-level files are processed
+dest = "E:/DevWeek3Demo/demo_file/_Sorted"           # sorted files + digests go here
+db = "E:/DevWeek3Demo/demo_file/_Sorted/sloth.db"
+
+[behavior]
+dry_run = true                           # START WITH true. Use --live when happy.
+settle_seconds = 1                       # file size must be stable this long
+min_confidence = 0.6                     # below this -> "Needs a human"
+max_chars_sent = 1000                    # only the start of each doc is sent
+review_category = "Needs a human"
+duplicates_category = "Duplicates"
+
+# Files matching these are NEVER sent to the API. Sorted by extension only.
+[privacy]
+local_only_name_patterns = [
+  "passport|visa|nid|national.?id|tax|tin|bank|statement|cheque|payslip|salary|medical|prescription|password|private|resume|cv|transcript|student|id",
+]
+local_only_category = "Private (not sent to AI)"
+
+
+# Extension shortcuts: skip the API entirely for obvious types (saves quota!)
+[extension_rules]
+".exe" = "Software/Installers"
+".msi" = "Software/Installers"
+".zip" = "Archives"
+".rar" = "Archives"
+".7z" = "Archives"
+".mp3" = "Media/Audio"
+".wav" = "Media/Audio"
+".mp4" = "Media/Video"
+".mkv" = "Media/Video"
+".epub" = "Books/Papers"
